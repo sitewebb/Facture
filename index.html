@@ -49,8 +49,12 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
 .btn-pdf:hover { background: #144f96 !important; }
 
 @media print {
+  @page { size: A4 portrait; margin: 15mm 15mm 15mm 15mm; }
   .btns-fixed, .upload-btn, .btn-add { display: none !important; }
-  body { padding-bottom: 0; }
+  body { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+  #app { width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+  input, textarea { border-bottom: none !important; }
+  table { page-break-inside: avoid; }
 }
 </style>
 </head>
@@ -140,9 +144,6 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
   <button onclick="envoyerClient()">Envoyer client</button>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script>
 function loadLogo(e) {
   const img = document.getElementById('logo');
@@ -195,50 +196,8 @@ function calc() {
   document.getElementById('ttc').innerText = fmt(totalHT + totalTVA);
 }
 
-async function imprimerPDF() {
-  const { jsPDF } = window.jspdf;
-  const el = document.getElementById('app');
-
-  // Sauvegarde du style original
-  const oldWidth = el.style.width;
-  const oldMaxWidth = el.style.maxWidth;
-  const oldPadding = el.style.padding;
-
-  // Force largeur A4 en pixels (794px = 210mm à 96dpi) avec marges internes
-  el.style.width = '794px';
-  el.style.maxWidth = '794px';
-  el.style.padding = '20px 30px';
-
-  const canvas = await html2canvas(el, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: '#ffffff',
-    width: 794,
-    windowWidth: 900
-  });
-
-  // Restaure le style
-  el.style.width = oldWidth;
-  el.style.maxWidth = oldMaxWidth;
-  el.style.padding = oldPadding;
-
-  const imgData = canvas.toDataURL('image/png');
-  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-  // Marges de 10mm de chaque côté
-  const margin = 10;
-  const pageW = 210;
-  const pageH = 297;
-  const usableW = pageW - margin * 2;
-  const ratio = canvas.width / canvas.height;
-  const imgH = usableW / ratio;
-
-  // Si ça dépasse une page, on réduit
-  const finalH = imgH > (pageH - margin * 2) ? (pageH - margin * 2) : imgH;
-  const finalW = finalH * ratio;
-
-  pdf.addImage(imgData, 'PNG', margin, margin, finalW, finalH);
-  pdf.save('facture.pdf');
+function imprimerPDF() {
+  window.print();
 }
 
 function envoyerEntreprise() {
