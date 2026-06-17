@@ -198,14 +198,46 @@ function calc() {
 async function imprimerPDF() {
   const { jsPDF } = window.jspdf;
   const el = document.getElementById('app');
-  const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+
+  // Sauvegarde du style original
+  const oldWidth = el.style.width;
+  const oldMaxWidth = el.style.maxWidth;
+  const oldPadding = el.style.padding;
+
+  // Force largeur A4 en pixels (794px = 210mm à 96dpi) avec marges internes
+  el.style.width = '794px';
+  el.style.maxWidth = '794px';
+  el.style.padding = '20px 30px';
+
+  const canvas = await html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff',
+    width: 794,
+    windowWidth: 900
+  });
+
+  // Restaure le style
+  el.style.width = oldWidth;
+  el.style.maxWidth = oldMaxWidth;
+  el.style.padding = oldPadding;
+
   const imgData = canvas.toDataURL('image/png');
   const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const pageW = 210, pageH = 297;
+
+  // Marges de 10mm de chaque côté
+  const margin = 10;
+  const pageW = 210;
+  const pageH = 297;
+  const usableW = pageW - margin * 2;
   const ratio = canvas.width / canvas.height;
-  let w = pageW, h = w / ratio;
-  if (h > pageH) { h = pageH; w = h * ratio; }
-  pdf.addImage(imgData, 'PNG', (pageW - w) / 2, 0, w, h);
+  const imgH = usableW / ratio;
+
+  // Si ça dépasse une page, on réduit
+  const finalH = imgH > (pageH - margin * 2) ? (pageH - margin * 2) : imgH;
+  const finalW = finalH * ratio;
+
+  pdf.addImage(imgData, 'PNG', margin, margin, finalW, finalH);
   pdf.save('facture.pdf');
 }
 
