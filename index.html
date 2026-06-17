@@ -49,7 +49,10 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
 .btn-pdf:hover { background: #144f96 !important; }
 
 @media print {
-  @page { size: A4 portrait; margin: 15mm 15mm 15mm 15mm; }
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
+  }
   .btns-fixed, .upload-btn, .btn-add { display: none !important; }
   body { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
   #app { width: 100% !important; max-width: 100% !important; padding: 0 !important; }
@@ -57,6 +60,9 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
   table { page-break-inside: avoid; }
   .big-title input { font-size: 20px !important; overflow: visible !important; }
   .right-col { min-width: 0 !important; }
+  /* Colonne date plus large pour afficher la date complète */
+  td:nth-child(2), th:nth-child(2) { width: 14% !important; }
+  td:nth-child(2) input { font-size: 11px !important; }
 }
 </style>
 </head>
@@ -142,7 +148,7 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
 
 <div class="btns-fixed">
   <button onclick="envoyerEntreprise()">Envoyer entreprise</button>
-  <button class="btn-pdf" onclick="imprimerPDF()">⬇ Télécharger PDF (A4)</button>
+  <button class="btn-pdf" onclick="imprimerPDF()">⬇ Imprimer / Enregistrer PDF</button>
   <button onclick="envoyerClient()">Envoyer client</button>
 </div>
 
@@ -199,6 +205,9 @@ function calc() {
 }
 
 function imprimerPDF() {
+  // Ouvre la boîte d'impression
+  // Dans Chrome : Plus de paramètres > décocher "En-têtes et pieds de page"
+  // Dans Firefox : Options > décocher "Imprimer les en-têtes et pieds de page"
   window.print();
 }
 
