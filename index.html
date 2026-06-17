@@ -204,10 +204,12 @@ function calc() {
 }
 
 function envoyerEntreprise() {
-  window.location.href = 'mailto:' + document.getElementById('emailEntreprise').value;
+  const email = document.getElementById('emailEntreprise').value.trim();
+  window.location.href = 'mailto:' + email;
 }
 function envoyerClient() {
-  window.location.href = 'mailto:' + document.getElementById('emailClient').value;
+  const email = document.getElementById('emailClient').value.trim();
+  window.location.href = 'mailto:' + email;
 }
 
 calc();
