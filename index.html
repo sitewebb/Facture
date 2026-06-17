@@ -29,12 +29,12 @@ table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: 
 th { background: #eee; font-size: 13px; }
 td, th { border: 1px solid #ccc; padding: 5px; text-align: center; vertical-align: top; }
 td:nth-child(1), th:nth-child(1) { width: 36%; text-align: left; }
-td:nth-child(2), th:nth-child(2) { width: 11%; }
+td:nth-child(2), th:nth-child(2) { width: 13%; }
 td:nth-child(3), th:nth-child(3) { width: 6%; }
 td:nth-child(4), th:nth-child(4) { width: 7%; }
 td:nth-child(5), th:nth-child(5) { width: 11%; }
 td:nth-child(6), th:nth-child(6) { width: 8%; }
-td:nth-child(7), th:nth-child(7) { width: 21%; }
+td:nth-child(7), th:nth-child(7) { width: 19%; }
 td input, td textarea { width: 100%; border: none; background: transparent; font-size: 13px; font-family: Arial; resize: none; overflow: hidden; padding: 0; }
 td input:focus, td textarea:focus { outline: none; }
 .desc-ta { min-height: 24px; line-height: 1.4; display: block; }
@@ -49,20 +49,21 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
 .btn-pdf:hover { background: #144f96 !important; }
 
 @media print {
-  @page {
-    size: A4 portrait;
-    margin: 15mm;
-  }
+  @page { size: A4 portrait; margin: 15mm; }
   .btns-fixed, .upload-btn, .btn-add { display: none !important; }
   body { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
   #app { width: 100% !important; max-width: 100% !important; padding: 0 !important; }
   input, textarea { border-bottom: none !important; }
-  table { page-break-inside: avoid; }
-  .big-title input { font-size: 20px !important; overflow: visible !important; }
-  .right-col { min-width: 0 !important; }
-  /* Colonne date plus large pour afficher la date complète */
-  td:nth-child(2), th:nth-child(2) { width: 14% !important; }
-  td:nth-child(2) input { font-size: 11px !important; }
+  table { page-break-inside: avoid; table-layout: fixed; width: 100%; }
+  /* Colonne date plus large pour ne pas tronquer */
+  td:nth-child(1), th:nth-child(1) { width: 32% !important; }
+  td:nth-child(2), th:nth-child(2) { width: 15% !important; }
+  td:nth-child(3), th:nth-child(3) { width: 5% !important; }
+  td:nth-child(4), th:nth-child(4) { width: 6% !important; }
+  td:nth-child(5), th:nth-child(5) { width: 10% !important; }
+  td:nth-child(6), th:nth-child(6) { width: 7% !important; }
+  td:nth-child(7), th:nth-child(7) { width: 25% !important; }
+  td:nth-child(2) input { font-size: 10px !important; white-space: nowrap; }
 }
 </style>
 </head>
@@ -71,7 +72,6 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
 <input class="upload-btn" type="file" accept="image/*" onchange="loadLogo(event)">
 
 <div id="app">
-
   <div class="top">
     <div class="left-col">
       <div class="logo-box">
@@ -143,12 +143,11 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
     <b>Code service :</b><br>
     <input value="Résidence">
   </div>
-
 </div>
 
 <div class="btns-fixed">
   <button onclick="envoyerEntreprise()">Envoyer entreprise</button>
-  <button class="btn-pdf" onclick="imprimerPDF()">⬇ Imprimer / Enregistrer PDF</button>
+  <button class="btn-pdf" onclick="window.print()">⬇ Télécharger PDF (A4)</button>
   <button onclick="envoyerClient()">Envoyer client</button>
 </div>
 
@@ -202,13 +201,6 @@ function calc() {
   document.getElementById('ht').innerText  = fmt(totalHT);
   document.getElementById('tva').innerText = fmt(totalTVA);
   document.getElementById('ttc').innerText = fmt(totalHT + totalTVA);
-}
-
-function imprimerPDF() {
-  // Ouvre la boîte d'impression
-  // Dans Chrome : Plus de paramètres > décocher "En-têtes et pieds de page"
-  // Dans Firefox : Options > décocher "Imprimer les en-têtes et pieds de page"
-  window.print();
 }
 
 function envoyerEntreprise() {
